@@ -128,6 +128,9 @@ public:
   int last_sent_message_id = 0;
   int maxMessageLength = 1500;
 
+  // New method to delete a message
+  bool deleteMessage(const String& chat_id, int message_id);
+
 private:
   // JsonObject * parseUpdates(String response);
   String _token;

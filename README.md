@@ -42,6 +42,7 @@ struct telegramMessage {
 
 </pre>
 
+![telegram_arduino_esp8266_web_app_data](https://github.com/ldijkman/Universal-Arduino-Telegram-Bot/assets/45427770/867ee0c3-c730-43ad-b150-a93327b8c87f)
 
 
 ![Travis CI status](https://api.travis-ci.org/witnessmenow/Universal-Arduino-Telegram-Bot.svg?branch=master)

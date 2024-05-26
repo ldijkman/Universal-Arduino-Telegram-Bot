@@ -72,7 +72,7 @@ String UniversalTelegramBot::sendGetToTelegram(const String& command) {
     #endif
     if (!client->connect(TELEGRAM_HOST, TELEGRAM_SSL_PORT)) {
       #ifdef TELEGRAM_DEBUG  
-        Serial.println(F("[BOT]Connection error"));
+        Serial.println(F("[BOT]Conection error"));
       #endif
     }
   }
@@ -149,7 +149,7 @@ String UniversalTelegramBot::sendPostToTelegram(const String& command, JsonObjec
     #endif
     if (!client->connect(TELEGRAM_HOST, TELEGRAM_SSL_PORT)) {
       #ifdef TELEGRAM_DEBUG  
-        Serial.println(F("[BOT Client]Connection error"));
+        Serial.println(F("[BOT Client]Conection error"));
       #endif
     }
   }
@@ -204,7 +204,7 @@ String UniversalTelegramBot::sendMultipartFormDataToTelegram(
     #endif
     if (!client->connect(TELEGRAM_HOST, TELEGRAM_SSL_PORT)) {
       #ifdef TELEGRAM_DEBUG  
-        Serial.println(F("[BOT Client]Connection error"));
+        Serial.println(F("[BOT Client]Conection error"));
       #endif
     }
   }
@@ -247,7 +247,7 @@ String UniversalTelegramBot::sendMultipartFormDataToTelegram(
     client->println(String(contentLength));
     client->print(F("Content-Type: multipart/form-data; boundary="));
     client->println(boundary);
-    client->println();
+    client->println(F(""));
     client->print(start_request);
 
     #ifdef TELEGRAM_DEBUG  
@@ -319,7 +319,7 @@ bool UniversalTelegramBot::getMe() {
 
 /*********************************************************************************
  * SetMyCommands - Update the command list of the bot on the telegram server     *
- * (Argument to pass: Serialized array of BotCommand)                            *
+ * (Argument to pass: Serialied array of BotCommand)                             *
  * CAUTION: All commands must be lower-case                                      *
  * Returns true, if the command list was updated successfully                    *
  ********************************************************************************/
@@ -348,9 +348,9 @@ bool UniversalTelegramBot::setMyCommands(const String& commandArray) {
 
 
 /***************************************************************
- * GetUpdates - function to receive messages from telegram     *
- * (Argument to pass: the last+1 message to read)              *
- * Returns the number of new messages                          *
+ * GetUpdates - function to receive messages from telegram *
+ * (Argument to pass: the last+1 message to read)             *
+ * Returns the number of new messages           *
  ***************************************************************/
 int UniversalTelegramBot::getUpdates(long offset) {
 
@@ -436,7 +436,7 @@ int UniversalTelegramBot::getUpdates(long offset) {
 }
 
 bool UniversalTelegramBot::processResult(JsonObject result, int messageIndex) {
-  long update_id = result["update_id"];
+  int update_id = result["update_id"];
   // Check have we already dealt with this message (this shouldn't happen!)
   if (last_message_received != update_id) {
     last_message_received = update_id;
@@ -449,6 +449,8 @@ bool UniversalTelegramBot::processResult(JsonObject result, int messageIndex) {
     messages[messageIndex].reply_to_message_id = 0;
     messages[messageIndex].reply_to_text = F("");
     messages[messageIndex].query_id = F("");
+ 
+
 
     if (result.containsKey("message")) {
       JsonObject message = result["message"];
@@ -460,7 +462,12 @@ bool UniversalTelegramBot::processResult(JsonObject result, int messageIndex) {
       messages[messageIndex].chat_title = message["chat"]["title"].as<String>();
       messages[messageIndex].hasDocument = false;
       messages[messageIndex].message_id = message["message_id"].as<int>();  // added message id
-      if (message.containsKey("text")) {
+    
+  // Check for web_app_data and process it
+
+
+
+if (message.containsKey("text")) {
         messages[messageIndex].text = message["text"].as<String>();
           
       } else if (message.containsKey("location")) {
@@ -519,7 +526,25 @@ bool UniversalTelegramBot::processResult(JsonObject result, int messageIndex) {
       } else if (message.containsKey("location")) {
         messages[messageIndex].longitude = message["location"]["longitude"].as<float>();
         messages[messageIndex].latitude  = message["location"]["latitude"].as<float>();
-      }
+      }else if (result.containsKey("message") && result["message"].containsKey("web_app_data")) {
+
+ #ifdef TELEGRAM_DEBUG
+    Serial.println(F("yeeeeeeeeeeeeeeeeeeeeeeeep"));
+ #endif
+ 
+    // Extract web_app_data
+    JsonObject webAppData = result["message"]["web_app_data"];
+    // Assuming web_app_data contains a field named 'data' with the actual data
+    String data = webAppData["data"].as<String>();
+
+    #ifdef TELEGRAM_DEBUG
+    Serial.print(F("Received web app data: "));
+    Serial.println(data);
+    #endif
+ #ifdef TELEGRAM_DEBUG
+    Serial.println(F("yeeeeeeeeeeeeeeeeeeeeeeeep"));
+ #endif
+}
     }
     return true;
   }
@@ -575,9 +600,13 @@ bool UniversalTelegramBot::sendMessage(const String& chat_id, const String& text
   return sendPostMessage(payload.as<JsonObject>(), message_id); // if message id == 0 then edit is false, else edit is true
 }
 
+
+
+
+
 bool UniversalTelegramBot::sendMessageWithReplyKeyboard(
     const String& chat_id, const String& text, const String& parse_mode, const String& keyboard,
-    bool resize, bool oneTime, bool selective) {
+    bool resize, bool oneTime, bool selective, const String& web_app_url) {
     
   DynamicJsonDocument payload(maxMessageLength);
   payload["chat_id"] = chat_id;
@@ -588,10 +617,25 @@ bool UniversalTelegramBot::sendMessageWithReplyKeyboard(
 
   JsonObject replyMarkup = payload.createNestedObject("reply_markup");
     
-  replyMarkup["keyboard"] = serialized(keyboard);
+  // Assuming 'keyboard' is a serialized JSON string of the keyboard layout
+  auto keyboardArray = replyMarkup.createNestedArray("keyboard");
+  DeserializationError error = deserializeJson(keyboardArray, keyboard);
+  if (error) {
+    Serial.print(F("deserializeJson() failed: "));
+    Serial.println(error.f_str());
+    return false;
+  }
 
-  // Telegram defaults these values to false, so to decrease the size of the
-  // payload we will only send them if needed
+  // Check if web_app_url is not empty and add it to the first button
+  if (!web_app_url.isEmpty()) {
+    // Assuming the first button of the first row is where we want to add the web_app
+    // Make sure your keyboard JSON structure allows this modification
+    JsonObject firstButton = keyboardArray[0][0].as<JsonObject>(); // Adjust this based on your actual keyboard structure
+    JsonObject webApp = firstButton.createNestedObject("web_app");
+    webApp["url"] = web_app_url;
+  }
+
+  // The rest remains the same
   if (resize)
     replyMarkup["resize_keyboard"] = resize;
 
@@ -603,6 +647,17 @@ bool UniversalTelegramBot::sendMessageWithReplyKeyboard(
 
   return sendPostMessage(payload.as<JsonObject>());
 }
+
+
+
+
+
+
+
+
+
+
+
 
 bool UniversalTelegramBot::sendMessageWithInlineKeyboard(const String& chat_id,
                                                          const String& text,

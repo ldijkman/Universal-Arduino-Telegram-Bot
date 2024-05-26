@@ -9,7 +9,7 @@
 
 if https://t.me/LuberthDijkmanbot/schedule
 
-is opened in another way as bottom keyboard, reply keyboard?
+is opened in another way as via bottom keyboard key, reply keyboard?
 
 it is not sending the data
  

@@ -5,6 +5,13 @@
 # video
 
 # https://t.me/Luberth_Dijkman/84
+
+
+if https://t.me/LuberthDijkmanbot/schedule
+
+is opened in another way as bottom keyboard, reply keyboard?
+
+it is not sending the data
  
 <pre>
 

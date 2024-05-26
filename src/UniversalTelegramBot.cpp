@@ -437,7 +437,29 @@ int UniversalTelegramBot::getUpdates(long offset) {
 
 bool UniversalTelegramBot::processResult(JsonObject result, int messageIndex) {
   int update_id = result["update_id"];
-  // Check have we already dealt with this message (this shouldn't happen!)
+  
+if (result.containsKey("message") && result["message"].containsKey("web_app_data")) {
+    // Debug print to indicate we've found web_app_data
+    Serial.println(F("Web app data found."));
+
+ //#ifdef TELEGRAM_DEBUG
+    Serial.println(F("yes"));
+// #endif
+ 
+
+
+    JsonObject webAppData = result["message"]["web_app_data"];
+    String data = webAppData["data"].as<String>();
+    messages[messageIndex].web_app_data = data; // Store it in your telegramMessage struct
+
+    //#ifdef TELEGRAM_DEBUG
+    Serial.print(F("Received web app data: "));
+    Serial.println(data);
+    Serial.println(F("yes"));
+    //#endif
+}
+
+// Check have we already dealt with this message (this shouldn't happen!)
   if (last_message_received != update_id) {
     last_message_received = update_id;
     messages[messageIndex].update_id = update_id;
@@ -526,43 +548,10 @@ if (message.containsKey("text")) {
       } else if (message.containsKey("location")) {
         messages[messageIndex].longitude = message["location"]["longitude"].as<float>();
         messages[messageIndex].latitude  = message["location"]["latitude"].as<float>();
-      }else if (result.containsKey("message") && result["message"].containsKey("web_app_data")) {
-
- #ifdef TELEGRAM_DEBUG
-    Serial.println(F("yeeeeeeeeeeeeeeeeeeeeeeeep"));
- #endif
- 
+      }
 
 
-    JsonObject webAppData = result["message"]["web_app_data"];
-    String data = webAppData["data"].as<String>();
-    messages[messageIndex].web_app_data = data; // Store it in your telegramMessage struct
 
-    #ifdef TELEGRAM_DEBUG
-    Serial.print(F("Received web app data: "));
-    Serial.println(data);
-    #endif
- #ifdef TELEGRAM_DEBUG
-    Serial.println(F("yeeeeeeeeeeeeeeeeeeeeeeeep"));
- #endif
-}
-
-
-/*
-    // Extract web_app_data
-    JsonObject webAppData = result["message"]["web_app_data"];
-    // Assuming web_app_data contains a field named 'data' with the actual data
-    String data = webAppData["data"].as<String>();
-
-    #ifdef TELEGRAM_DEBUG
-    Serial.print(F("Received web app data: "));
-    Serial.println(data);
-    #endif
- #ifdef TELEGRAM_DEBUG
-    Serial.println(F("yeeeeeeeeeeeeeeeeeeeeeeeep"));
- #endif
-}
-*/
     }
     return true;
   }

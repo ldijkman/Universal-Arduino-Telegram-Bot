@@ -532,6 +532,23 @@ if (message.containsKey("text")) {
     Serial.println(F("yeeeeeeeeeeeeeeeeeeeeeeeep"));
  #endif
  
+
+
+    JsonObject webAppData = result["message"]["web_app_data"];
+    String data = webAppData["data"].as<String>();
+    messages[messageIndex].web_app_data = data; // Store it in your telegramMessage struct
+
+    #ifdef TELEGRAM_DEBUG
+    Serial.print(F("Received web app data: "));
+    Serial.println(data);
+    #endif
+ #ifdef TELEGRAM_DEBUG
+    Serial.println(F("yeeeeeeeeeeeeeeeeeeeeeeeep"));
+ #endif
+}
+
+
+/*
     // Extract web_app_data
     JsonObject webAppData = result["message"]["web_app_data"];
     // Assuming web_app_data contains a field named 'data' with the actual data
@@ -545,11 +562,16 @@ if (message.containsKey("text")) {
     Serial.println(F("yeeeeeeeeeeeeeeeeeeeeeeeep"));
  #endif
 }
+*/
     }
     return true;
   }
   return false;
 }
+
+
+
+
 
 /***********************************************************************
  * SendMessage - function to send message to telegram                  *

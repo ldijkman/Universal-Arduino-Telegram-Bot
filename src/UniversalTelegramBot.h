@@ -22,7 +22,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA
 #ifndef UniversalTelegramBot_h
 #define UniversalTelegramBot_h
 
-//#define TELEGRAM_DEBUG 1
+#define TELEGRAM_DEBUG 1
 #define ARDUINOJSON_DECODE_UNICODE 1
 #define ARDUINOJSON_USE_LONG_LONG 1
 #include <Arduino.h>
@@ -53,6 +53,7 @@ struct telegramMessage {
   String file_caption;
   String file_path;
   String file_name;
+  String web_app_data; // Add this line to store web app data
   bool hasDocument;
   long file_size;
   float longitude;
@@ -86,10 +87,17 @@ public:
 
   bool sendSimpleMessage(const String& chat_id, const String& text, const String& parse_mode);
   bool sendMessage(const String& chat_id, const String& text, const String& parse_mode = "", int message_id = 0);
-  bool sendMessageWithReplyKeyboard(const String& chat_id, const String& text,
-                                    const String& parse_mode, const String& keyboard,
-                                    bool resize = false, bool oneTime = false,
-                                    bool selective = false);
+
+
+
+
+bool sendMessageWithReplyKeyboard(const String& chat_id, const String& text,
+                                   const String& parse_mode, const String& keyboard,
+                                   bool resize = false, bool oneTime = false,
+                                   bool selective = false, const String& web_app_url = "");
+
+
+
   bool sendMessageWithInlineKeyboard(const String& chat_id, const String& text,
                                      const String& parse_mode, const String& keyboard, int message_id = 0);
 
@@ -128,8 +136,6 @@ public:
   int last_sent_message_id = 0;
   int maxMessageLength = 1500;
 
-  // New method to delete a message
-  bool deleteMessage(const String& chat_id, int message_id);
 
 private:
   // JsonObject * parseUpdates(String response);

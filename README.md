@@ -66,6 +66,43 @@ struct telegramMessage {
 ![telegram_arduino_esp8266_web_app_data](https://github.com/ldijkman/Universal-Arduino-Telegram-Bot/assets/45427770/867ee0c3-c730-43ad-b150-a93327b8c87f)
 
 
+<pre>
+ 
+    telegram web app closing after Telegram.WebApp.sendData
+        is this normal?
+    html5 time input does behave different in telegram 
+        https://ldijkman.github.io/async-esp-fs-webserver/ino/thermostat_web_flash/Telegram_WebApp/Telegram_WebApp.html
+    How to inspect Telegram web app?
+        Telegram Desktop on Windows and Linux​
+            Go to Settings > Advanced > Experimental settings > Enable webview inspection. 
+            Right click in the WebView and choose Inspect.
+
+   
+    create a bot 
+        https://t.me/BotFather  and ask for /newbot            and get a bot token
+   
+    get id     
+        https://t.me/myidbot and ask for /getid               and get chat_id
+   
+    new webapp url setting
+       https://t.me/BotFather
+            /newapp
+            /editapp
+            /myapps
+
+   arduno ESP8266 telegram webapp only sends data when launched/opened from bottom keyboard  
+        Mini Apps launched from a web_app type keyboard button
+        can send data back to the bot in a service message using Telegram.WebApp.sendData.
+        This makes it possible for the bot to produce a response without communicating with any external servers.   
+        
+  times are saved to browser local storage
+        if you use the same device / browser it should save the times
+
+    
+ 
+</pre>
+
+
 ![Travis CI status](https://api.travis-ci.org/witnessmenow/Universal-Arduino-Telegram-Bot.svg?branch=master)
 ![License](https://img.shields.io/github/license/witnessmenow/Universal-Arduino-Telegram-Bot)
 ![Release stable](https://badgen.net/github/release/witnessmenow/Universal-Arduino-Telegram-Bot/stable)

@@ -6,7 +6,7 @@ can send data back to the bot in a service message using Telegram.WebApp.sendDat
 
 This makes it possible for the bot to produce a response without communicating with any external servers.
 
-# video
+# Video
 
 # https://t.me/Luberth_Dijkman/84
 

@@ -1,5 +1,48 @@
 # Universal Telegram Bot Library
 
+<pre>
+# https://t.me/Luberth_Dijkman
+ 
+ https://ldijkman.github.io/async-esp-fs-webserver/ino/thermostat_web_flash/Telegram_WebApp/Telegram_WebApp.html
+ 
+#made changes for WebApp bottom keyboard to open webapp
+ so webapp can send without external servers
+ 
+bool sendMessageWithReplyKeyboard(const String& chat_id, const String& text,
+                                   const String& parse_mode, const String& keyboard,
+                                   bool resize = false, bool oneTime = false,
+                                   bool selective = false, const String& web_app_url = "");
+
+and trying to get webappdata
+struct telegramMessage {
+  String text;
+  String chat_id;
+  String chat_title;
+  String from_id;
+  String from_name;
+  String date;
+  String type;
+  String file_caption;
+  String file_path;
+  String file_name;
+  String web_app_data; // Add this line to store web app data
+  bool hasDocument;
+  long file_size;
+  float longitude;
+  float latitude;
+  int update_id;
+  int message_id;  
+
+  int reply_to_message_id;
+  String reply_to_text;
+  String query_id;
+};
+
+
+</pre>
+
+
+
 ![Travis CI status](https://api.travis-ci.org/witnessmenow/Universal-Arduino-Telegram-Bot.svg?branch=master)
 ![License](https://img.shields.io/github/license/witnessmenow/Universal-Arduino-Telegram-Bot)
 ![Release stable](https://badgen.net/github/release/witnessmenow/Universal-Arduino-Telegram-Bot/stable)

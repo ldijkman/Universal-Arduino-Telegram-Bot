@@ -1,5 +1,10 @@
 # Universal Telegram Bot Library
 
+Mini Apps launched from a web_app type keyboard button 
+
+can send data back to the bot in a service message using Telegram.WebApp.sendData. 
+
+This makes it possible for the bot to produce a response without communicating with any external servers.
 
 # video
 

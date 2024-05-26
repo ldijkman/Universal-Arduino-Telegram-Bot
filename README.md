@@ -7,7 +7,9 @@
 
 
 if https://t.me/LuberthDijkmanbot/schedule 
+
 cq 
+
 https://ldijkman.github.io/async-esp-fs-webserver/ino/thermostat_web_flash/Telegram_WebApp/Telegram_WebApp.html
 
 is opened in another way as via bottom keyboard key, reply keyboard?
